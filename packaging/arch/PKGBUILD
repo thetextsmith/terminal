@@ -1,0 +1,38 @@
+# Maintainer: Ishe Chinyoka <releases@thetextsmith.com>
+pkgname=textsmith
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="A terminal for anyone who works with text, commands and the shell, written for screen readers first"
+arch=('x86_64' 'aarch64')
+url="https://thetextsmith.com"
+license=('GPL-3.0-or-later')
+depends=('vte3' 'gtk3')
+makedepends=('cargo')
+source=("https://thetextsmith.com/download/$pkgname-$pkgver.tar.gz")
+sha256sums=('SKIP') # filled in by scripts/release.sh
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  export RUSTUP_TOOLCHAIN=stable
+  cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  export RUSTUP_TOOLCHAIN=stable CARGO_TARGET_DIR=target
+  cargo build --frozen --release
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+  export RUSTUP_TOOLCHAIN=stable CARGO_TARGET_DIR=target
+  cargo test --frozen --release
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  install -Dm755 target/release/textsmith "$pkgdir/usr/bin/textsmith"
+  install -Dm644 data/textsmith.desktop "$pkgdir/usr/share/applications/textsmith.desktop"
+  install -Dm644 README.md doc/manual.html -t "$pkgdir/usr/share/doc/$pkgname/"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

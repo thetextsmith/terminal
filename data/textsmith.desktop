@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=The Textsmith
+GenericName=Terminal
+Comment=A terminal for anyone who works with text, commands and the shell
+Exec=textsmith
+Icon=utilities-terminal
+Terminal=false
+StartupNotify=true
+Categories=System;TerminalEmulator;
+Keywords=terminal;shell;command;prompt;bookmarks;
+X-TerminalArgExec=-e
+X-TerminalArgDir=--working-directory

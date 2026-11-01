@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.11" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>The Textsmith manual</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  
+  <style>
+  :root { --ink:#1d1b18; --paper:#fbf8f2; --accent:#b4471c; --muted:#6b645a; --code:#f1ebe0; }
+  @media (prefers-color-scheme: dark) { :root { --ink:#ece6dc; --paper:#1a1816; --accent:#f08a50; --muted:#a59d90; --code:#26231f; } }
+  body { margin:0 auto; max-width:46rem; padding:2rem 1rem 4rem; background:var(--paper); color:var(--ink);
+    font:1.05rem/1.6 system-ui, "Cantarell", "Noto Sans", sans-serif; }
+  h1, h2, h3 { line-height:1.25; } h1 { font-size:2.1rem; margin-bottom:0; }
+  h2 { margin-top:2.5rem; padding-top:1rem; border-top:2px solid var(--accent); }
+  a { color:var(--accent); } .subtitle { color:var(--muted); margin-top:.25rem; }
+  code, pre { font-family:"DejaVu Sans Mono", "Noto Sans Mono", monospace; font-size:.93em; background:var(--code); border-radius:4px; }
+  code { padding:.05em .3em; } pre { padding:.8rem 1rem; overflow-x:auto; } pre code { padding:0; background:none; }
+  table { border-collapse:collapse; width:100%; } th, td { text-align:left; padding:.4rem .6rem; border-bottom:1px solid var(--code); vertical-align:top; }
+  nav#TOC { background:var(--code); padding:.5rem 1.25rem; border-radius:6px; } nav#TOC ul { padding-left:1.1rem; }
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">The Textsmith manual</h1>
+<p class="subtitle">Version 1.0</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#installing" id="toc-installing">Installing</a></li>
+<li><a href="#first-steps" id="toc-first-steps">First steps</a></li>
+<li><a href="#bookmarks" id="toc-bookmarks">Bookmarks</a></li>
+<li><a href="#a-command-per-machine" id="toc-a-command-per-machine">A
+command per machine</a></li>
+<li><a href="#inside-ssh-tmux-and-other-programs"
+id="toc-inside-ssh-tmux-and-other-programs">Inside ssh, tmux and other
+programs</a></li>
+<li><a href="#bookmarks-in-other-terminals"
+id="toc-bookmarks-in-other-terminals">Bookmarks in other
+terminals</a></li>
+<li><a href="#the-review-buffer" id="toc-the-review-buffer">The review
+buffer</a></li>
+<li><a href="#keys" id="toc-keys">Keys</a></li>
+<li><a href="#preferences" id="toc-preferences">Preferences</a></li>
+<li><a href="#with-a-screen-reader" id="toc-with-a-screen-reader">With a
+screen reader</a></li>
+<li><a href="#help-and-feedback" id="toc-help-and-feedback">Help and
+feedback</a></li>
+</ul>
+</nav>
+<h2 id="introduction">Introduction</h2>
+<p>The Textsmith is a Linux terminal for anyone who works with text,
+commands and the shell. It is built on GTK 3 and VTE, the same terminal
+widget as GNOME Terminal and Terminator, so your prompt, readline, Tab
+completion and full-screen programs such as vim, htop and mutt behave as
+they always have.</p>
+<p>On top of an ordinary terminal, The Textsmith adds three things:</p>
+<ul>
+<li><strong>Bookmarks.</strong> Save a command once, with places for its
+arguments, and run it by name: <code>burn arch.iso</code>,
+<code>send Music</code>, <code>update</code>. Bookmarks can have default
+values, take any number of arguments, run a different command on each of
+your machines, and be exported as ordinary shell functions.</li>
+<li><strong>The review buffer.</strong> Press F4 and every command of
+the session is there with its output, as plain text to read, search and
+copy. Alt+Up and Alt+Down jump from command to command, Alt+PageUp and
+Alt+PageDown to the ones that failed.</li>
+<li><strong>A quiet terminal for screen readers.</strong> The Textsmith
+was written with Orca from the first line. Enter and Tab do not make
+Orca read your prompt again; Tab says each completion whole; and the
+program only speaks up when a key would otherwise give no answer.</li>
+</ul>
+<p>It is free software, distributed under the GNU General Public
+License, version 3. Copyright 2026 Ishe Chinyoka.</p>
+<h3 id="two-editions">Two editions</h3>
+<p><strong>The Textsmith</strong> (this manual) is the main edition: a
+native GTK terminal, written in Rust.</p>
+<p><strong>The Textsmith Electron edition</strong>
+(<code>textsmith-electron</code>) is a different experience of the same
+idea: the session is a web page, each command a heading and its output
+the text under it, read as you would read a page in Firefox. It shares
+the bookmarks file, so both editions can be used side by side. Its own
+README describes its keys.</p>
+<h2 id="installing">Installing</h2>
+<p>The Textsmith runs on Linux, under X11 and Wayland. It needs GTK 3
+and VTE (2.91), which most desktops already have.</p>
+<h3 id="debian-ubuntu-and-linux-mint">Debian, Ubuntu and Linux Mint</h3>
+<p>Download <code>textsmith_1.0.0-1_amd64.deb</code> from the download
+page and install it:</p>
+<pre><code>sudo apt install ./textsmith_1.0.0-1_amd64.deb</code></pre>
+<p>The package is built for Ubuntu 24.04, Linux Mint 22, Debian 13 and
+later. It pulls in VTE and GTK if they are missing.</p>
+<h3 id="arch-linux">Arch Linux</h3>
+<p>Build the package with the <code>PKGBUILD</code> from the download
+page:</p>
+<pre><code>sudo pacman -S --needed base-devel
+mkdir textsmith &amp;&amp; cd textsmith
+# put the PKGBUILD here, then:
+makepkg -si</code></pre>
+<h3 id="any-other-distribution-from-the-source">Any other distribution:
+from the source</h3>
+<p>Install Rust (from your distribution or rustup.rs) and the VTE and
+GTK 3 development files (<code>vte3</code> and <code>gtk3</code> on
+Arch, <code>libvte-2.91-dev</code> and <code>libgtk-3-dev</code> on
+Debian and Ubuntu, <code>vte291-devel</code> and <code>gtk3-devel</code>
+on Fedora). Then, in the unpacked source folder:</p>
+<pre><code>sh scripts/install.sh</code></pre>
+<p>This builds The Textsmith, puts <code>textsmith</code> in
+<code>~/.local/bin</code> and adds it to your application menu. The
+source download also holds a prebuilt <code>bin/textsmith</code>, which
+<code>install.sh</code> uses when Rust is not installed.</p>
+<h3 id="making-it-your-terminal">Making it your terminal</h3>
+<ul>
+<li><strong>GNOME:</strong> Settings, Keyboard, Custom Shortcuts: add
+one that runs <code>textsmith</code> on Super+Enter, Ctrl+Alt+T or the
+key you like. Recent GNOME and KDE also read
+<code>~/.config/xdg-terminals.list</code>:
+<code>echo textsmith.desktop &gt;&gt; ~/.config/xdg-terminals.list</code></li>
+<li><strong>MATE:</strong>
+<code>gsettings set org.mate.applications-terminal exec textsmith</code></li>
+<li><strong>Cinnamon:</strong>
+<code>gsettings set org.cinnamon.desktop.default-applications.terminal exec textsmith</code></li>
+<li><strong>i3 or sway:</strong>
+<code>bindsym $mod+Return exec textsmith</code></li>
+<li>Many programs also honour <code>export TERMINAL=textsmith</code> in
+<code>~/.profile</code>.</li>
+</ul>
+<p><code>textsmith</code> starts in the background, so it is safe to
+start from inside itself. It understands
+<code>--working-directory DIR</code> and <code>-e command</code>, which
+file managers use for “open a terminal here”.</p>
+<h3 id="checking-the-installation">Checking the installation</h3>
+<pre><code>textsmith --version</code></pre>
+<p>says which copy is running. <code>textsmith --keys</code> lists your
+keys, and <code>textsmith --config-dir</code> says where your bookmarks
+and preferences live.</p>
+<h2 id="first-steps">First steps</h2>
+<p>Start The Textsmith from your application menu or with your shortcut.
+You get your usual shell, bash or zsh, with your own
+<code>~/.bashrc</code> or <code>~/.zshrc</code> read first. The
+Textsmith then adds its own small hooks, which make bookmarks and the
+review buffer work. Other shells start bash.</p>
+<p>Everything you know still works: Ctrl+R searches history, Tab
+completes, Ctrl+C stops a program. The Textsmith adds a handful of keys
+of its own (see <a href="#keys">Keys</a>), and only at the shell’s
+prompt: while a program runs, every key goes to it unchanged.</p>
+<p>Tabs: Ctrl+Shift+T opens one in the same directory, Ctrl+Shift+W
+closes it, Ctrl+PageDown and Ctrl+PageUp move between them. The window
+title is the current directory.</p>
+<p>Press <strong>F1</strong> at any time for this manual and
+<strong>Ctrl+F1</strong> for the About window.</p>
+<h2 id="bookmarks">Bookmarks</h2>
+<p>A bookmark is a command you save once and run by name. The Textsmith
+keeps them in one plain text file, <code>bookmarks</code>, one per line,
+which you can edit by hand and carry between machines.</p>
+<h3 id="making-a-bookmark">Making a bookmark</h3>
+<p>Type the command as a comment, with a name and a colon in front, then
+press <strong>Alt+M</strong>:</p>
+<pre><code>#vps: ssh forge</code></pre>
+<p>The line is saved as a bookmark called <code>vps</code>. Alt+M on a
+line without a label bookmarks it as it is; on an empty line, it
+bookmarks the last command you ran. Pressing Alt+M on a bookmark that is
+already there removes it. <strong>Alt+Shift+M</strong> saves the
+bookmark and runs it at once.</p>
+<p>A label can carry a description, which the bookmark list shows:</p>
+<pre><code>#vps my server: ssh forge</code></pre>
+<h3 id="running-a-bookmark">Running a bookmark</h3>
+<p>There are three ways, all at your shell’s prompt:</p>
+<ol type="1">
+<li><strong>Alt+Enter.</strong> Type the name and its arguments as if it
+were a command, <code>vps</code>, and press Alt+Enter instead of
+Enter.</li>
+<li><strong><code>#@</code>.</strong> Type <code>#@vps</code> and press
+Enter. Tab after <code>#@</code> completes the names and says what each
+bookmark takes.</li>
+<li><strong>The bookmark list.</strong> Alt+Shift+B lists every
+bookmark. Type to filter it, then Enter to run one. A bookmark that
+needs arguments is put on the command line for you to complete.
+Ctrl+Enter puts it there to edit; Delete removes it.</li>
+</ol>
+<p>Whichever way you use, the command line first shows what will
+actually run, and that is what goes into your history. A mistake, such
+as an unknown name or a missing argument, is said on a line of its own
+and your line stays as it was. <strong>Alt+Shift+Enter</strong> fills a
+call in without running it, so you can read the command before pressing
+Enter.</p>
+<h3 id="places-for-arguments">Places for arguments</h3>
+<p><code>&lt;&gt;</code> or <code>&lt;name&gt;</code> marks where an
+argument goes:</p>
+<pre><code>#copy: cp &lt;src&gt; &lt;dst&gt;
+copy a.txt backup/                runs  cp a.txt backup/</code></pre>
+<p>Arguments fill the places in the order they first appear, and are put
+in exactly as you typed them, quotes and all. A name used twice gets the
+same value both times. To write a real <code>&lt;&gt;</code> in a
+command, type <code>\&lt;&gt;</code>.</p>
+<h3 id="default-values">Default values</h3>
+<p><code>&lt;name:default&gt;</code> is a place that fills itself in
+when you leave it out:</p>
+<pre><code>#burn: dd if=&lt;iso&gt; of=&lt;disk:/dev/sdb&gt; bs=1M status=progress
+burn arch.iso                     runs  dd if=arch.iso of=/dev/sdb ...
+burn arch.iso /dev/sdc            runs  dd if=arch.iso of=/dev/sdc ...</code></pre>
+<p>Arguments fill places in order, so a default only helps when every
+place after it has a default too. A default can hold spaces and quotes,
+but not <code>&gt;</code>.</p>
+<h3 id="a-default-taken-from-another-place">A default taken from another
+place</h3>
+<p>When two arguments are usually the same, but not always, let one
+default to the other:</p>
+<pre><code>#send: rclone sync &lt;from&gt; drive:Library/&lt;to:&lt;from&gt;&gt; --progress
+send Music                        runs  rclone sync Music drive:Library/Music --progress
+send Music Songs                  runs  rclone sync Music drive:Library/Songs --progress</code></pre>
+<p><code>&lt;to:&lt;from&gt;&gt;</code> reads “to, which is from unless
+you give it”. The default can add to the other place:
+<code>#bk: cp &lt;file&gt; &lt;to:&lt;file&gt;.bak&gt;</code> makes
+<code>bk notes.txt</code> copy to <code>notes.txt.bak</code>. When two
+values are always the same, use one name twice instead:
+<code>&lt;dir&gt; ... &lt;dir&gt;</code>.</p>
+<h3 id="any-number-of-arguments">Any number of arguments</h3>
+<p><code>&lt;..&gt;</code> (or <code>&lt;name..&gt;</code>) takes every
+argument the other places leave over, none included:</p>
+<pre><code>#install: sudo apt install -y &lt;..&gt;
+install vim git htop              runs  sudo apt install -y vim git htop
+#cpto: cp -v &lt;..&gt; &lt;dst&gt;
+cpto a.txt b.txt backup/          runs  cp -v a.txt b.txt backup/</code></pre>
+<p>A bookmark has one such place (the same name used again repeats it),
+and it can have a default:
+<code>&lt;opts..:--all-targets&gt;</code>.</p>
+<h3 id="counting-arguments">Counting arguments</h3>
+<p>A count in the label says how many arguments a bookmark takes.
+Without places, the arguments are added at the end:</p>
+<pre><code>#copy(2..): cp -v                 at least two
+#l(..1): ls -lF                   at most one
+#install(1..): sudo apt install -y &lt;..&gt;   at least one package</code></pre>
+<h3 id="bookmarks-at-the-end-of-a-line">Bookmarks at the end of a
+line</h3>
+<p><code>#@</code> at the end of a command adds a bookmark to it, much
+like a global alias in zsh. A bookmark whose label starts with
+<code>#|</code> is piped into:</p>
+<pre><code>#|count: wc -l
+#|grab: grep -i &lt;&gt;
+ls -1 #@count                     runs  ls -1 | wc -l
+find . #@grab todo @count         runs  find . | grep -i todo | wc -l</code></pre>
+<p>After the first <code>#@</code>, further bookmarks only need
+<code>@</code>.</p>
+<h3 id="the-bookmarks-file">The bookmarks file</h3>
+<p>The file is called <code>bookmarks</code>, in The Textsmith’s folder
+(see <a href="#preferences">Preferences</a>). Each line is a bookmark
+exactly as you would type it, and lines that start with <code>#</code>
+(a hash and a space) are notes:</p>
+<pre><code># Servers
+#vps my server: ssh forge
+#site: rsync -rltvP --delete &lt;source&gt; forge:/var/www/&lt;destination&gt;</code></pre>
+<p>Edit it with any text editor; The Textsmith reads it again each time
+it is used. The Electron edition reads the same file.</p>
+<h2 id="a-command-per-machine">A command per machine</h2>
+<p>When your bookmarks travel between machines, in your dotfiles for
+instance, one name can stand for a different command on each:</p>
+<pre><code>#update: [:anvil &quot;sudo apt update &amp;&amp; sudo apt upgrade -y&quot;, :brainpower &quot;sudo pacman -Syu&quot;, :hammer &quot;sudo dnf update&quot;]</code></pre>
+<p><code>update</code> then runs the command for the machine it is on.
+Several machines can share a command (<code>:anvil :forge "..."</code>),
+and <code>:*</code> stands for any other machine. Each command can have
+places, defaults and <code>&lt;..&gt;</code> of its own. Commands go in
+double quotes (with <code>\"</code> for a quote inside) or in single
+quotes. On a machine with no command and no <code>:*</code>, the
+bookmark says so and runs nothing.</p>
+<p>The machine’s name is the first of these that is set:</p>
+<ol type="1">
+<li>the <code>TEXTSMITH_MACHINE</code> environment variable;</li>
+<li>a file called <code>machine</code> in The Textsmith’s folder,
+holding one line (keep it out of your dotfiles: it is what makes this
+machine different);</li>
+<li>the host name, from <code>/etc/hostname</code>, with nothing to set
+up.</li>
+</ol>
+<p>A bookmark that belongs to one machine only needs no list at all:
+<code>#update: sudo pacman -Syu</code>.</p>
+<h2 id="inside-ssh-tmux-and-other-programs">Inside ssh, tmux and other
+programs</h2>
+<p>Bookmarks run at your own shell’s prompt. Inside <code>ssh</code>,
+<code>tmux</code> or any other program, the shell is not The
+Textsmith’s, so <code>#@</code>, Alt+Enter and Alt+M do not apply there.
+The bookmark list does: while a program runs, choosing a bookmark types
+its command into the program without pressing Enter, so you can hear it
+and then press Enter yourself. A bookmark that takes arguments is typed
+with its places (<code>&lt;file&gt;</code>) for you to replace.</p>
+<p>Inside <code>ssh forge</code>, a bookmark with a command per machine
+shows one row per machine (“update, for forge: …”), with the machine you
+are connected to first. The Textsmith finds it from the ssh that is
+really running, however you started it (an alias, a bookmark), and
+matches the name you gave ssh or the host name from your
+<code>~/.ssh/config</code>.</p>
+<h2 id="bookmarks-in-other-terminals">Bookmarks in other terminals</h2>
+<p>Bookmarks need not stay in The Textsmith.
+<code>textsmith bm export</code> writes them as ordinary bash and zsh
+functions:</p>
+<pre><code>textsmith bm export -o ~/.config/textsmith/bookmarks.sh</code></pre>
+<p>Then, in <code>~/.bashrc</code> or <code>~/.zshrc</code> on any
+machine or terminal:</p>
+<pre><code>[ -f ~/.config/textsmith/bookmarks.sh ] &amp;&amp; . ~/.config/textsmith/bookmarks.sh</code></pre>
+<p>Each bookmark becomes a function of the same name. It takes the same
+arguments and says the same sentence when they are wrong:</p>
+<pre><code>site() {
+  (( $# == 2 )) || { printf &#39;%s\n&#39; &#39;site takes 2 arguments: source, destination; you gave &#39;&quot;$#.&quot; &gt;&amp;2; return 2; }
+  rsync -rltvP --delete &quot;${1}&quot; forge:/var/www/&quot;${2}&quot;
+}</code></pre>
+<p>Defaults, <code>&lt;..&gt;</code>, counts and commands per machine
+all carry over. A piped bookmark becomes a function to pipe into:
+<code>ls | count</code>. Bookmarks without a name, and additions that
+are not commands on their own (<code>#quiet: 2&gt;/dev/null</code>), are
+left out. Run the export again after changing your bookmarks.</p>
+<p>A function hides any command of the same name, so a bookmark named
+after a builtin or a program on your PATH (<code>install</code>, say) is
+left out, and the export tells you. Rename the bookmark, or give every
+function a prefix with <code>--prefix ts_</code>
+(<code>ts_install</code>, <code>ts_site</code>).
+<code>--keep-clashes</code> exports them anyway.</p>
+<h2 id="the-review-buffer">The review buffer</h2>
+<p><strong>F4</strong> opens a read-only view of the tab’s session: each
+command on a line of its own, <code>$ make (failed, exit 2)</code>, and
+its output under it. The cursor starts on the last command.</p>
+<ul>
+<li>The arrow keys and the usual text keys read it. Shift with them
+selects, and Ctrl+C copies.</li>
+<li>Alt+Up and Alt+Down: the previous and next command.</li>
+<li>Alt+PageUp and Alt+PageDown: the previous and next command that
+failed.</li>
+<li>Alt+End: the last command, with the newest output.</li>
+<li>Escape or F4: back to the terminal.</li>
+</ul>
+<p>The output is taken when each command finishes, so progress bars show
+as they ended. Full-screen programs such as vim are not in the review,
+only what they left on the normal screen.</p>
+<h2 id="keys">Keys</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Key</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F1</td>
+<td>This manual, in your web browser</td>
+</tr>
+<tr>
+<td>Ctrl+F1</td>
+<td>About The Textsmith</td>
+</tr>
+<tr>
+<td>F4</td>
+<td>The review buffer, and back</td>
+</tr>
+<tr>
+<td>Alt+Enter</td>
+<td>Run the line as a bookmark call</td>
+</tr>
+<tr>
+<td>Alt+Shift+Enter</td>
+<td>Fill the bookmark call in without running it</td>
+</tr>
+<tr>
+<td>Shift+Enter</td>
+<td>Run the line with sudo</td>
+</tr>
+<tr>
+<td>Alt+M</td>
+<td>Bookmark the line (or the last command), or remove that
+bookmark</td>
+</tr>
+<tr>
+<td>Alt+Shift+M</td>
+<td>Bookmark the line and run it</td>
+</tr>
+<tr>
+<td>Alt+Shift+B</td>
+<td>The bookmark list</td>
+</tr>
+<tr>
+<td>Tab, Shift+Tab</td>
+<td>Complete: the next and previous choice</td>
+</tr>
+<tr>
+<td>Ctrl+Shift+C, Ctrl+Shift+V</td>
+<td>Copy, paste</td>
+</tr>
+<tr>
+<td>Ctrl+Shift+T, Ctrl+Shift+W</td>
+<td>New tab, close tab</td>
+</tr>
+<tr>
+<td>Ctrl+PageDown, Ctrl+PageUp</td>
+<td>Next tab, previous tab</td>
+</tr>
+<tr>
+<td>Ctrl+Comma</td>
+<td>Open the preferences file</td>
+</tr>
+</tbody>
+</table>
+<p>In the review buffer: Alt+Up, Alt+Down, Alt+PageUp, Alt+PageDown and
+Alt+End, as above.</p>
+<p>Every key can be changed in the preferences. The keys for the command
+line only act at the shell’s prompt, so Alt+M still reaches emacs and
+Shift+Enter is just Enter in python.</p>
+<p><strong>Tab</strong> goes through the choices, as zsh does: when
+several things match, the first Tab puts in the first one, each Tab
+after it the next, and Shift+Tab goes back. Each choice is said whole.
+Set <code>editing.tabCompletion</code> to <code>"shell"</code> for
+bash’s usual listing instead.</p>
+<h2 id="preferences">Preferences</h2>
+<p>The Textsmith keeps your bookmarks and preferences in one folder, the
+first of these that applies:</p>
+<ol type="1">
+<li><code>TEXTSMITH_CONFIG</code> (or <code>TEXTSMITH_HOME</code>), if
+you set it;</li>
+<li><code>~/.textsmith</code>, if it is there (earlier versions used
+it);</li>
+<li><code>~/.config/textsmith</code>, or
+<code>$XDG_CONFIG_HOME/textsmith</code>.</li>
+</ol>
+<p><code>textsmith --config-dir</code> says which one is in use.</p>
+<p>The preferences are in <code>gtk-prefs.json</code>, written with
+every default the first time The Textsmith starts.
+<strong>Ctrl+Comma</strong> opens it in your text editor, and it is read
+again when the window gets the focus back.</p>
+<ul>
+<li><code>display</code>: <code>font</code> (“Monospace 12”),
+<code>scrollback</code> (lines kept), <code>colours</code> (“system”
+follows your desktop; or “dark”, “light”, “high-contrast”), and
+<code>bell</code>.</li>
+<li><code>title</code>: <code>format</code> at the prompt and
+<code>running</code> while a command runs. Both are <code>{dir}</code>,
+the directory. Other fields: <code>{prompt}</code>,
+<code>{shell}</code>, <code>{command}</code>, <code>{app}</code>.</li>
+<li><code>startup</code>: <code>directory</code>, where new tabs start,
+and <code>shell</code>.</li>
+<li><code>editing</code>: <code>tabCompletion</code>,
+<code>"cycle"</code> or <code>"shell"</code>.</li>
+<li><code>review</code>: <code>command</code>, how a command line looks
+in the review, and <code>speakJumps</code>, <code>true</code> to have
+each jump announced.</li>
+<li><code>keys</code>: every key in the table above. A key may hold
+alternatives: <code>"Ctrl+PageDown or Ctrl+Tab"</code>.</li>
+</ul>
+<h2 id="with-a-screen-reader">With a screen reader</h2>
+<p>The Textsmith is tested with Orca on GNOME and MATE. Some notes:</p>
+<ul>
+<li>Typing, the cursor and new output are read by Orca as in GNOME
+Terminal. Enter and Tab do not make it read your prompt again.</li>
+<li>For long output, F4 is the review buffer: a text view, where Orca’s
+usual reading keys work, with jumps between commands.</li>
+<li>Alt+Shift with the arrows are Orca’s table keys, so The Textsmith
+leaves them alone; failed commands are on Alt+PageUp and
+Alt+PageDown.</li>
+<li>When a key has nothing to report (“No earlier command”, a bookmark
+mistake), The Textsmith says so through the accessibility layer,
+once.</li>
+</ul>
+<h2 id="help-and-feedback">Help and feedback</h2>
+<ul>
+<li>The site, with this manual and news: <a
+href="https://thetextsmith.com"
+class="uri">https://thetextsmith.com</a></li>
+<li>Under the Anvil, the blog about working with text and the shell: <a
+href="https://thetextsmith.com/blog/"
+class="uri">https://thetextsmith.com/blog/</a></li>
+<li>Questions, bugs and ideas: the issue tracker, <a
+href="https://github.com/thetextsmith/textsmith/issues"
+class="uri">https://github.com/thetextsmith/textsmith/issues</a>.</li>
+</ul>
+<p>Copyright 2026 Ishe Chinyoka. The Textsmith is free software: you can
+redistribute it and change it under the terms of the GNU General Public
+License, version 3 or (at your option) any later version. It comes with
+no warranty. The full licence is in the <code>LICENSE</code> file and in
+the About window.</p>
+</body>
+</html>
